@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flutter/Dart standard gitignore
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Mac
+.DS_Store
+
+# Ignore mobile generated build stuff, keep native source
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Flutter.framework
+mobile/ios/Flutter/Flutter.podspec
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Flutter/app.flx
+mobile/ios/Flutter/app.zip
+mobile/ios/Flutter/flutter_assets/
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/ServiceDefinitions.json
+mobile/ios/Runner/GeneratedPluginRegistrant.*
+
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/**/*.keystore
+mobile/android/**/app-profile.aab
+mobile/android/**/app-release.aab
+mobile/android/**/app-profile.apk
+mobile/android/**/app-release.apk
+mobile/android/.gradle/
+
+mobile/macos/Flutter/ephemeral/
+mobile/macos/Flutter/GeneratedPluginRegistrant.swift
+
+mobile/windows/flutter/ephemeral/
+mobile/windows/flutter/generated_plugin_registrant.cc
+mobile/windows/flutter/generated_plugin_registrant.h
+mobile/windows/flutter/generated_plugins.cmake
+
+mobile/linux/flutter/ephemeral/
+mobile/linux/flutter/generated_plugin_registrant.cc
+mobile/linux/flutter/generated_plugin_registrant.h
+mobile/linux/flutter/generated_plugins.cmake
+
+# IDE files
+.idea/
+.metadata
+*.iml
+
+# Node / Web
+node_modules/

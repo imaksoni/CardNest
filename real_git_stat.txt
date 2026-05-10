@@ -1,0 +1,171 @@
+ .gitignore                                         |  83 +++
+ README.md                                          |  48 +-
+ backend/.env.example                               |   3 +
+ backend/Dockerfile                                 |  11 +
+ backend/alembic.ini                                | 149 ++++
+ backend/alembic/README                             |   1 +
+ backend/alembic/env.py                             |  82 +++
+ backend/alembic/script.py.mako                     |  28 +
+ backend/requirements.txt                           |  22 +
+ backend/src/__init__.py                            |   0
+ backend/src/activities/__init__.py                 |   0
+ backend/src/activities/router.py                   |   5 +
+ backend/src/auth/__init__.py                       |   0
+ backend/src/auth/router.py                         |   5 +
+ backend/src/businesses/__init__.py                 |   0
+ backend/src/businesses/router.py                   |   5 +
+ backend/src/cards/__init__.py                      |   0
+ backend/src/cards/router.py                        |   5 +
+ backend/src/config.py                              |  10 +
+ backend/src/database.py                            |  15 +
+ backend/src/main.py                                |  37 +
+ backend/src/models.py                              |  11 +
+ backend/src/programs/__init__.py                   |   0
+ backend/src/programs/router.py                     |   5 +
+ backend/src/qr_validation/__init__.py              |   0
+ backend/src/qr_validation/router.py                |   5 +
+ backend/src/redis_client.py                        |   6 +
+ backend/src/sync/__init__.py                       |   0
+ backend/src/sync/router.py                         |   5 +
+ backend/src/tiers/__init__.py                      |   0
+ backend/src/tiers/router.py                        |   5 +
+ backend/src/users/__init__.py                      |   0
+ backend/src/users/router.py                        |   5 +
+ docker-compose.yml                                 |  39 +
+ git_stat.txt                                       |   1 +
+ mobile/.gitignore                                  |  45 ++
+ mobile/README.md                                   |  17 +
+ mobile/analysis_options.yaml                       |  28 +
+ mobile/android/.gitignore                          |  14 +
+ mobile/android/app/build.gradle.kts                |  44 ++
+ mobile/android/app/src/debug/AndroidManifest.xml   |   7 +
+ mobile/android/app/src/main/AndroidManifest.xml    |  45 ++
+ .../com/example/cardnest_mobile/MainActivity.kt    |   5 +
+ .../main/res/drawable-v21/launch_background.xml    |  12 +
+ .../src/main/res/drawable/launch_background.xml    |  12 +
+ .../app/src/main/res/mipmap-hdpi/ic_launcher.png   | Bin 0 -> 544 bytes
+ .../app/src/main/res/mipmap-mdpi/ic_launcher.png   | Bin 0 -> 442 bytes
+ .../app/src/main/res/mipmap-xhdpi/ic_launcher.png  | Bin 0 -> 721 bytes
+ .../app/src/main/res/mipmap-xxhdpi/ic_launcher.png | Bin 0 -> 1031 bytes
+ .../src/main/res/mipmap-xxxhdpi/ic_launcher.png    | Bin 0 -> 1443 bytes
+ .../app/src/main/res/values-night/styles.xml       |  18 +
+ mobile/android/app/src/main/res/values/styles.xml  |  18 +
+ mobile/android/app/src/profile/AndroidManifest.xml |   7 +
+ mobile/android/build.gradle.kts                    |  24 +
+ mobile/android/gradle.properties                   |   2 +
+ .../gradle/wrapper/gradle-wrapper.properties       |   5 +
+ mobile/android/settings.gradle.kts                 |  26 +
+ mobile/ios/.gitignore                              |  34 +
+ mobile/ios/Flutter/AppFrameworkInfo.plist          |  24 +
+ mobile/ios/Flutter/Debug.xcconfig                  |   1 +
+ mobile/ios/Flutter/Release.xcconfig                |   1 +
+ mobile/ios/Runner.xcodeproj/project.pbxproj        | 620 ++++++++++++++++
+ .../project.xcworkspace/contents.xcworkspacedata   |   7 +
+ .../xcshareddata/IDEWorkspaceChecks.plist          |   8 +
+ .../xcshareddata/WorkspaceSettings.xcsettings      |   8 +
+ .../xcshareddata/xcschemes/Runner.xcscheme         | 101 +++
+ .../Runner.xcworkspace/contents.xcworkspacedata    |   7 +
+ .../xcshareddata/IDEWorkspaceChecks.plist          |   8 +
+ .../xcshareddata/WorkspaceSettings.xcsettings      |   8 +
+ mobile/ios/Runner/AppDelegate.swift                |  16 +
+ .../AppIcon.appiconset/Contents.json               | 122 ++++
+ .../AppIcon.appiconset/Icon-App-1024x1024@1x.png   | Bin 0 -> 10932 bytes
+ .../AppIcon.appiconset/Icon-App-20x20@1x.png       | Bin 0 -> 295 bytes
+ .../AppIcon.appiconset/Icon-App-20x20@2x.png       | Bin 0 -> 406 bytes
+ .../AppIcon.appiconset/Icon-App-20x20@3x.png       | Bin 0 -> 450 bytes
+ .../AppIcon.appiconset/Icon-App-29x29@1x.png       | Bin 0 -> 282 bytes
+ .../AppIcon.appiconset/Icon-App-29x29@2x.png       | Bin 0 -> 462 bytes
+ .../AppIcon.appiconset/Icon-App-29x29@3x.png       | Bin 0 -> 704 bytes
+ .../AppIcon.appiconset/Icon-App-40x40@1x.png       | Bin 0 -> 406 bytes
+ .../AppIcon.appiconset/Icon-App-40x40@2x.png       | Bin 0 -> 586 bytes
+ .../AppIcon.appiconset/Icon-App-40x40@3x.png       | Bin 0 -> 862 bytes
+ .../AppIcon.appiconset/Icon-App-60x60@2x.png       | Bin 0 -> 862 bytes
+ .../AppIcon.appiconset/Icon-App-60x60@3x.png       | Bin 0 -> 1674 bytes
+ .../AppIcon.appiconset/Icon-App-76x76@1x.png       | Bin 0 -> 762 bytes
+ .../AppIcon.appiconset/Icon-App-76x76@2x.png       | Bin 0 -> 1226 bytes
+ .../AppIcon.appiconset/Icon-App-83.5x83.5@2x.png   | Bin 0 -> 1418 bytes
+ .../LaunchImage.imageset/Contents.json             |  23 +
+ .../LaunchImage.imageset/LaunchImage.png           | Bin 0 -> 68 bytes
+ .../LaunchImage.imageset/LaunchImage@2x.png        | Bin 0 -> 68 bytes
+ .../LaunchImage.imageset/LaunchImage@3x.png        | Bin 0 -> 68 bytes
+ .../Assets.xcassets/LaunchImage.imageset/README.md |   5 +
+ .../ios/Runner/Base.lproj/LaunchScreen.storyboard  |  37 +
+ mobile/ios/Runner/Base.lproj/Main.storyboard       |  26 +
+ mobile/ios/Runner/Info.plist                       |  70 ++
+ mobile/ios/Runner/Runner-Bridging-Header.h         |   1 +
+ mobile/ios/Runner/SceneDelegate.swift              |   6 +
+ mobile/ios/RunnerTests/RunnerTests.swift           |  12 +
+ mobile/lib/auth/auth_screen.dart                   |  13 +
+ .../lib/business_dashboard/dashboard_screen.dart   |  13 +
+ mobile/lib/core/router.dart                        |  75 ++
+ mobile/lib/core/theme.dart                         |  10 +
+ mobile/lib/main.dart                               |  25 +
+ mobile/lib/members/members_screen.dart             |  13 +
+ mobile/lib/onboarding/onboarding_screen.dart       |  13 +
+ mobile/lib/programs/programs_screen.dart           |  13 +
+ mobile/lib/qr_scan/qr_scan_screen.dart             |  13 +
+ .../lib/role_selection/role_selection_screen.dart  |  13 +
+ mobile/lib/settings/settings_screen.dart           |  13 +
+ mobile/lib/sync/sync_screen.dart                   |  13 +
+ mobile/lib/tiers/tiers_screen.dart                 |  13 +
+ mobile/lib/wallet/wallet_screen.dart               |  13 +
+ mobile/linux/.gitignore                            |   1 +
+ mobile/linux/CMakeLists.txt                        | 128 ++++
+ mobile/linux/flutter/CMakeLists.txt                |  88 +++
+ mobile/linux/runner/CMakeLists.txt                 |  26 +
+ mobile/linux/runner/main.cc                        |   6 +
+ mobile/linux/runner/my_application.cc              | 148 ++++
+ mobile/linux/runner/my_application.h               |  21 +
+ mobile/macos/.gitignore                            |   7 +
+ mobile/macos/Flutter/Flutter-Debug.xcconfig        |   1 +
+ mobile/macos/Flutter/Flutter-Release.xcconfig      |   1 +
+ mobile/macos/Runner.xcodeproj/project.pbxproj      | 705 ++++++++++++++++++
+ .../xcshareddata/IDEWorkspaceChecks.plist          |   8 +
+ .../xcshareddata/xcschemes/Runner.xcscheme         |  99 +++
+ .../Runner.xcworkspace/contents.xcworkspacedata    |   7 +
+ .../xcshareddata/IDEWorkspaceChecks.plist          |   8 +
+ mobile/macos/Runner/AppDelegate.swift              |  13 +
+ .../AppIcon.appiconset/Contents.json               |  68 ++
+ .../AppIcon.appiconset/app_icon_1024.png           | Bin 0 -> 102994 bytes
+ .../AppIcon.appiconset/app_icon_128.png            | Bin 0 -> 5680 bytes
+ .../AppIcon.appiconset/app_icon_16.png             | Bin 0 -> 520 bytes
+ .../AppIcon.appiconset/app_icon_256.png            | Bin 0 -> 14142 bytes
+ .../AppIcon.appiconset/app_icon_32.png             | Bin 0 -> 1066 bytes
+ .../AppIcon.appiconset/app_icon_512.png            | Bin 0 -> 36406 bytes
+ .../AppIcon.appiconset/app_icon_64.png             | Bin 0 -> 2218 bytes
+ mobile/macos/Runner/Base.lproj/MainMenu.xib        | 343 +++++++++
+ mobile/macos/Runner/Configs/AppInfo.xcconfig       |  14 +
+ mobile/macos/Runner/Configs/Debug.xcconfig         |   2 +
+ mobile/macos/Runner/Configs/Release.xcconfig       |   2 +
+ mobile/macos/Runner/Configs/Warnings.xcconfig      |  13 +
+ mobile/macos/Runner/DebugProfile.entitlements      |  12 +
+ mobile/macos/Runner/Info.plist                     |  32 +
+ mobile/macos/Runner/MainFlutterWindow.swift        |  15 +
+ mobile/macos/Runner/Release.entitlements           |   8 +
+ mobile/macos/RunnerTests/RunnerTests.swift         |  12 +
+ mobile/pubspec.lock                                | 794 +++++++++++++++++++++
+ mobile/pubspec.yaml                                |  98 +++
+ mobile/test/widget_test.dart                       |  17 +
+ mobile/web/favicon.png                             | Bin 0 -> 917 bytes
+ mobile/web/icons/Icon-192.png                      | Bin 0 -> 5292 bytes
+ mobile/web/icons/Icon-512.png                      | Bin 0 -> 8252 bytes
+ mobile/web/icons/Icon-maskable-192.png             | Bin 0 -> 5594 bytes
+ mobile/web/icons/Icon-maskable-512.png             | Bin 0 -> 20998 bytes
+ mobile/web/index.html                              |  46 ++
+ mobile/web/manifest.json                           |  35 +
+ mobile/windows/.gitignore                          |  17 +
+ mobile/windows/CMakeLists.txt                      | 108 +++
+ mobile/windows/flutter/CMakeLists.txt              | 109 +++
+ mobile/windows/runner/CMakeLists.txt               |  40 ++
+ mobile/windows/runner/Runner.rc                    | 121 ++++
+ mobile/windows/runner/flutter_window.cpp           |  71 ++
+ mobile/windows/runner/flutter_window.h             |  33 +
+ mobile/windows/runner/main.cpp                     |  43 ++
+ mobile/windows/runner/resource.h                   |  16 +
+ mobile/windows/runner/resources/app_icon.ico       | Bin 0 -> 33772 bytes
+ mobile/windows/runner/runner.exe.manifest          |  14 +
+ mobile/windows/runner/utils.cpp                    |  65 ++
+ mobile/windows/runner/utils.h                      |  19 +
+ mobile/windows/runner/win32_window.cpp             | 288 ++++++++
+ mobile/windows/runner/win32_window.h               | 102 +++
+ 170 files changed, 6141 insertions(+), 1 deletion(-)
