@@ -118,6 +118,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.errorMessage!)),
+        );
+        ref.read(authProvider.notifier).clearError();
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
