@@ -1,7 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'auth_provider.dart';
 
 // Import placeholder screens
+import '../splash/splash_screen.dart';
 import '../auth/auth_screen.dart';
 import '../role_selection/role_selection_screen.dart';
 import '../onboarding/onboarding_screen.dart';
@@ -14,62 +18,95 @@ import '../qr_scan/qr_scan_screen.dart';
 import '../sync/sync_screen.dart';
 import '../settings/settings_screen.dart';
 
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/auth',
-  routes: [
-    GoRoute(
-      path: '/auth',
-      builder: (context, state) => const AuthScreen(),
-    ),
-    GoRoute(
-      path: '/role_selection',
-      builder: (context, state) => const RoleSelectionScreen(),
-    ),
-    GoRoute(
-      path: '/onboarding',
-      builder: (context, state) => const OnboardingScreen(),
-    ),
-    GoRoute(
-      path: '/wallet',
-      builder: (context, state) => const WalletScreen(),
-    ),
-    GoRoute(
-      path: '/dashboard',
-      builder: (context, state) => const BusinessDashboardScreen(),
-    ),
-    GoRoute(
-      path: '/programs',
-      builder: (context, state) => const ProgramsScreen(),
-    ),
-    GoRoute(
-      path: '/tiers',
-      builder: (context, state) => const TiersScreen(),
-    ),
-    GoRoute(
-      path: '/members',
-      builder: (context, state) => const MembersScreen(),
-    ),
-    GoRoute(
-      path: '/scan',
-      builder: (context, state) => const QrScanScreen(),
-    ),
-    GoRoute(
-      path: '/sync',
-      builder: (context, state) => const SyncScreen(),
-    ),
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SettingsScreen(),
-    ),
-  ],
-  redirect: (BuildContext context, GoRouterState state) {
-    // TODO: Implement actual auth/role logic
-    final bool isAuthenticated = false; // Placeholder
+final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
 
-    if (!isAuthenticated && state.uri.path != '/auth') {
-      // return '/auth';
-      return null; // Let it pass for initial UI skeleton checking
-    }
-    return null;
-  },
-);
+  return GoRouter(
+    initialLocation: '/splash',
+    routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/auth',
+        builder: (context, state) => const AuthScreen(),
+      ),
+      GoRoute(
+        path: '/role_selection',
+        builder: (context, state) => const RoleSelectionScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/wallet',
+        builder: (context, state) => const WalletScreen(),
+      ),
+      GoRoute(
+        path: '/dashboard',
+        builder: (context, state) => const BusinessDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/programs',
+        builder: (context, state) => const ProgramsScreen(),
+      ),
+      GoRoute(
+        path: '/tiers',
+        builder: (context, state) => const TiersScreen(),
+      ),
+      GoRoute(
+        path: '/members',
+        builder: (context, state) => const MembersScreen(),
+      ),
+      GoRoute(
+        path: '/scan',
+        builder: (context, state) => const QrScanScreen(),
+      ),
+      GoRoute(
+        path: '/sync',
+        builder: (context, state) => const SyncScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
+    ],
+    redirect: (BuildContext context, GoRouterState state) {
+      final isSplash = state.uri.path == '/splash';
+      final isRoleSelection = state.uri.path == '/role_selection';
+      final isAuth = state.uri.path == '/auth';
+
+      if (authState.status == AuthStatus.unknown) {
+        return isSplash ? null : '/splash';
+      }
+
+      if (authState.status == AuthStatus.unauthenticated) {
+        if (authState.role == UserRole.none) {
+          return isRoleSelection ? null : '/role_selection';
+        }
+        return isAuth ? null : '/auth';
+      }
+
+      if (authState.status == AuthStatus.authenticated) {
+        if (isSplash || isRoleSelection || isAuth) {
+           return authState.hasCompletedOnboarding
+              ? (authState.role == UserRole.business ? '/dashboard' : '/wallet')
+              : '/onboarding';
+        }
+
+        if (!authState.hasCompletedOnboarding) {
+          return state.uri.path == '/onboarding' ? null : '/onboarding';
+        }
+
+        // They are authenticated and completed onboarding
+        if (state.uri.path == '/onboarding') {
+          return authState.role == UserRole.business ? '/dashboard' : '/wallet';
+        }
+      }
+
+      return null;
+    },
+  );
+});
