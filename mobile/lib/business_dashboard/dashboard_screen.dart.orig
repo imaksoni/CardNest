@@ -81,17 +81,17 @@ class BusinessDashboardScreen extends ConsumerWidget {
                       _QuickActionButton(
                         icon: Icons.qr_code_scanner,
                         label: 'Scan QR',
-                        onTap: () => context.go('/scan'),
+                        onTap: () => context.push('/scan'),
                       ),
                       _QuickActionButton(
                         icon: Icons.add_card,
                         label: 'New Program',
-                        onTap: () => context.go('/programs'),
+                        onTap: () => context.push('/programs'),
                       ),
                       _QuickActionButton(
                         icon: Icons.sync,
                         label: 'Sync Data',
-                        onTap: () => context.go('/sync'),
+                        onTap: () => context.push('/sync'),
                       ),
                     ],
                   ),
@@ -128,7 +128,7 @@ class BusinessDashboardScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/scan');
+          context.push('/scan');
         },
         child: const Icon(Icons.qr_code_scanner),
       ),

@@ -19,6 +19,8 @@ import '../sync/sync_screen.dart';
 import '../settings/settings_screen.dart';
 import '../wallet/card_detail_screen.dart';
 import '../wallet/activity_history_screen.dart';
+import '../business_profile/business_profile_screen.dart';
+import '../business_dashboard/business_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -60,21 +62,32 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ActivityHistoryScreen(cardId: cardId);
         },
       ),
-      GoRoute(
-        path: '/dashboard',
-        builder: (context, state) => const BusinessDashboardScreen(),
-      ),
-      GoRoute(
-        path: '/programs',
-        builder: (context, state) => const ProgramsScreen(),
+      ShellRoute(
+        builder: (context, state, child) {
+          return BusinessScaffold(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/dashboard',
+            builder: (context, state) => const BusinessDashboardScreen(),
+          ),
+          GoRoute(
+            path: '/business_profile',
+            builder: (context, state) => const BusinessProfileScreen(),
+          ),
+          GoRoute(
+            path: '/programs',
+            builder: (context, state) => const ProgramsScreen(),
+          ),
+          GoRoute(
+            path: '/members',
+            builder: (context, state) => const MembersScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/tiers',
         builder: (context, state) => const TiersScreen(),
-      ),
-      GoRoute(
-        path: '/members',
-        builder: (context, state) => const MembersScreen(),
       ),
       GoRoute(
         path: '/scan',

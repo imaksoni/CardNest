@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/auth_provider.dart';
 import '../core/widgets.dart';
 import '../data/user_repository.dart';
+import 'business_onboarding_screen.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -77,24 +78,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: isBusiness
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const EmptyState(
-                      title: 'Set up your business',
-                      message:
-                          'Add your business details, location, and customize your loyalty program to start rewarding customers.',
-                      icon: Icons.storefront,
-                    ),
-                    const Spacer(),
-                    PrimaryButton(
-                      text: 'Complete Onboarding',
-                      onPressed: () {
-                        ref.read(authProvider.notifier).completeOnboarding();
-                      },
-                    ),
-                  ],
-                )
+              ? const BusinessOnboardingScreen()
               : Form(
                   key: _formKey,
                   child: Column(
