@@ -17,6 +17,8 @@ import '../members/members_screen.dart';
 import '../qr_scan/qr_scan_screen.dart';
 import '../sync/sync_screen.dart';
 import '../settings/settings_screen.dart';
+import '../wallet/card_detail_screen.dart';
+import '../wallet/activity_history_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -43,6 +45,20 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/wallet',
         builder: (context, state) => const WalletScreen(),
+      ),
+      GoRoute(
+        path: '/card_detail',
+        builder: (context, state) {
+          final cardData = state.extra as Map<String, dynamic>;
+          return CardDetailScreen(cardData: cardData);
+        },
+      ),
+      GoRoute(
+        path: '/card_activity',
+        builder: (context, state) {
+          final cardId = state.extra as String;
+          return ActivityHistoryScreen(cardId: cardId);
+        },
       ),
       GoRoute(
         path: '/dashboard',
