@@ -15,6 +15,12 @@ class WalletRepository {
       rethrow;
     }
   }
+
+  Future<void> refreshWallet() async {
+    // Used to inform the local wallet screen to pull the latest cards
+    // In an actual offline-first setup, this would trigger a remote sync to local DB
+    // Since MVP relies on the future provider, invalidating the provider does the work.
+  }
 }
 
 final walletRepositoryProvider = Provider<WalletRepository>((ref) {
@@ -22,7 +28,7 @@ final walletRepositoryProvider = Provider<WalletRepository>((ref) {
   return WalletRepository(dio);
 });
 
+// Real provider fetching from repository
 final myCardsProvider = FutureProvider<List<dynamic>>((ref) async {
-  final repo = ref.watch(walletRepositoryProvider);
-  return repo.getMyCards();
+  return ref.watch(walletRepositoryProvider).getMyCards();
 });

@@ -47,7 +47,6 @@ class ProgramRepository {
       final response = await _dio.post('/programs/', data: {
         'name': modelWithId.name,
         'description': modelWithId.description,
-        'type': modelWithId.type ?? 'loyalty',
         'business_id': modelWithId.businessId,
       });
 
@@ -67,7 +66,6 @@ class ProgramRepository {
       final response = await _dio.put('/programs/${program.id}', data: {
         'name': program.name,
         'description': program.description,
-        'type': program.type,
       });
 
       final serverModel = ProgramModel.fromJson(response.data);

@@ -57,3 +57,30 @@ def get_profile(
     if not profile:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found")
     return profile
+
+class UserSearchResponse(BaseModel):
+    id: int
+    firebase_uid: str
+    phone_number: str
+    display_name: Optional[str] = None
+    email: Optional[str] = None
+
+@router.get("/search", response_model=UserSearchResponse)
+def search_user(
+    phone: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user = db.query(User).filter(User.phone_number == phone).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    profile = db.query(UserProfile).filter(UserProfile.user_id == user.id).first()
+
+    return UserSearchResponse(
+        id=user.id,
+        firebase_uid=user.firebase_uid,
+        phone_number=user.phone_number,
+        display_name=profile.display_name if profile else None,
+        email=profile.email if profile else None
+    )

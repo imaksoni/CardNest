@@ -14,6 +14,9 @@ import '../business_dashboard/dashboard_screen.dart';
 import '../programs/programs_screen.dart';
 import '../tiers/tiers_screen.dart';
 import '../members/members_screen.dart';
+import '../members/member_search_screen.dart';
+import '../members/issue_card_screen.dart';
+import '../members/member_detail_screen.dart';
 import '../qr_scan/qr_scan_screen.dart';
 import '../sync/sync_screen.dart';
 import '../settings/settings_screen.dart';
@@ -84,6 +87,24 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const MembersScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/member_search',
+        builder: (context, state) => const MemberSearchScreen(),
+      ),
+      GoRoute(
+        path: '/issue_card',
+        builder: (context, state) {
+          final userId = state.extra as int;
+          return IssueCardScreen(userId: userId);
+        },
+      ),
+      GoRoute(
+        path: '/member_detail',
+        builder: (context, state) {
+          final memberId = state.extra as int;
+          return MemberDetailScreen(memberId: memberId);
+        },
       ),
       GoRoute(
         path: '/tiers',

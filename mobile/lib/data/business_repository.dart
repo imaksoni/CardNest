@@ -46,6 +46,24 @@ class BusinessRepository {
   Future<BusinessModel?> getCurrentBusiness() async {
     return _localRepo.getBusiness('current_business');
   }
+
+  Future<List<dynamic>> getMembers() async {
+    try {
+      final response = await _dio.get('/businesses/members');
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getMemberDetail(int memberId) async {
+    try {
+      final response = await _dio.get('/businesses/members/$memberId');
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 
 final businessRepositoryProvider = Provider<BusinessRepository>((ref) {
