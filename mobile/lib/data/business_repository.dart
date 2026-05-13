@@ -4,12 +4,14 @@ import '../core/api_client.dart';
 import '../domain/models/business_model.dart';
 import '../domain/repositories/repositories.dart';
 import 'user_repository.dart';
+import '../sync/sync_engine.dart';
 
 class BusinessRepository {
   final Dio _dio;
   final LocalRepository _localRepo;
+  final SyncEngine _syncEngine;
 
-  BusinessRepository(this._dio, this._localRepo);
+  BusinessRepository(this._dio, this._localRepo, this._syncEngine);
 
   Future<void> updateBusiness({
     required String name,
@@ -17,15 +19,9 @@ class BusinessRepository {
     String? category,
   }) async {
     try {
-      final response = await _dio.post('/business/profile', data: {
-        'name': name,
-        if (description != null) 'description': description,
-        if (category != null) 'category': category,
-      });
-
-      // After updating remote, save locally
       final businessId = 'current_business'; // Placeholder for now
 
+      // 1. Optimistic local save
       final business = await _localRepo.getBusiness(businessId) ??
           BusinessModel(
             id: businessId,
@@ -37,7 +33,22 @@ class BusinessRepository {
         name: name,
         description: description,
         localUpdatedAt: DateTime.now(),
+        syncState: 'pending',
       ));
+
+      // 2. Enqueue offline action
+      await _syncEngine.enqueueOperation(
+        'update',
+        'business',
+        businessId,
+        {
+          'name': name,
+          if (description != null) 'description': description,
+          if (category != null) 'category': category,
+        }
+      );
+
+      _syncEngine.sync();
     } catch (e) {
       rethrow;
     }
@@ -69,5 +80,6 @@ class BusinessRepository {
 final businessRepositoryProvider = Provider<BusinessRepository>((ref) {
   final dio = ref.watch(apiClientProvider);
   final localRepo = ref.watch(localRepositoryProvider);
-  return BusinessRepository(dio, localRepo);
+  final syncEngine = ref.watch(syncEngineProvider.notifier);
+  return BusinessRepository(dio, localRepo, syncEngine);
 });

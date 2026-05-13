@@ -1,0 +1,12 @@
+--- mobile/lib/sync/sync_engine.dart
++++ mobile/lib/sync/sync_engine.dart
+@@ -165,7 +165,8 @@
+       for (final item in queueItems) {
+         final newRetry = item.retryCount + 1;
+         if (newRetry > 5) {
+-          await (_db.delete(_db.syncQueues)..where((t) => t.id.equals(item.id))).go();
++          await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))
++            .write(SyncQueuesCompanion(retryCount: drift.Value(newRetry)));
+         } else {
+           await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))
+             .write(SyncQueuesCompanion(retryCount: drift.Value(newRetry)));

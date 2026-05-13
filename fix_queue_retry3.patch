@@ -1,0 +1,12 @@
+--- mobile/lib/sync/sync_engine.dart
++++ mobile/lib/sync/sync_engine.dart
+@@ -107,9 +107,6 @@
+
+       if (data['card_activities'] != null) {
+         for (final item in data['card_activities']) {
+-          if (item['timestamp'] != null) {
+-            item['timestamp'] = item['timestamp'];
+-          }
+           final ca = CardActivityModel.fromJson(item);
+           await _db.into(_db.cardActivities).insertOnConflictUpdate(ca.toDb());
+         }

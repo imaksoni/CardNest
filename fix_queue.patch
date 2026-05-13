@@ -1,0 +1,21 @@
+--- mobile/lib/sync/sync_engine.dart
++++ mobile/lib/sync/sync_engine.dart
+@@ -148,8 +148,15 @@
+     try {
+       final response = await _dio.post('/sync/push', data: {'operations': operations});
+
+       if (response.statusCode == 200) {
+-        for (final item in queueItems) {
+-          await (_db.delete(_db.syncQueues)..where((t) => t.id.equals(item.id))).go();
++        final failedOps = response.data['failed_operations'] as List<dynamic>? ?? [];
++        final failedIds = failedOps.map((f) => f['entityId']).toSet();
++
++        for (final item in queueItems) {
++          if (!failedIds.contains(item.entityId)) {
++             await (_db.delete(_db.syncQueues)..where((t) => t.id.equals(item.id))).go();
++          } else {
++             // Optionally mark permanent failure if conflict detected
++          }
+         }
+       }
+     } catch (e) {
