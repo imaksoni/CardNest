@@ -1,0 +1,22 @@
+--- mobile/lib/domain/models/profile_model.dart
++++ mobile/lib/domain/models/profile_model.dart
+@@ -10,9 +10,6 @@
+     String? email,
+     String? displayName,
+     String? role,
+     DateTime? localUpdatedAt,
+     DateTime? serverUpdatedAt,
+     String? syncState,
+     String? operationId,
+     @Default(false) bool isDeleted,
+--- mobile/lib/domain/models/business_model.dart
++++ mobile/lib/domain/models/business_model.dart
+@@ -10,9 +10,6 @@
+     String? ownerId,
+     String? description,
+     String? logoUrl,
+     DateTime? localUpdatedAt,
+     DateTime? serverUpdatedAt,
+     String? syncState,
+     String? operationId,
+     @Default(false) bool isDeleted,

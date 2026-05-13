@@ -1,0 +1,14 @@
+--- mobile/lib/sync/sync_engine.dart
++++ mobile/lib/sync/sync_engine.dart
+@@ -154,8 +154,9 @@
+     } catch (e) {
+       for (final item in queueItems) {
+         final newRetry = item.retryCount + 1;
+-        if (newRetry > 5) {
++        if (newRetry > 10) {
++          // Mark for manual review by keeping it in the queue but stop trying
+           await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))
+-            .write(SyncQueuesCompanion(retryCount: drift.Value(newRetry)));
++            .write(SyncQueuesCompanion(retryCount: drift.Value(9999)));
+         } else {
+           await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))

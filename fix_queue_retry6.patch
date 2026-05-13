@@ -1,0 +1,41 @@
+--- mobile/lib/sync/sync_banner.dart
++++ mobile/lib/sync/sync_banner.dart
+@@ -2,6 +2,7 @@
+ import 'package:flutter_riverpod/flutter_riverpod.dart';
+ import 'sync_engine.dart';
+ import '../data/user_repository.dart';
+
+ class SyncStatusBanner extends ConsumerWidget {
+   const SyncStatusBanner({super.key});
+
+   @override
+   Widget build(BuildContext context, WidgetRef ref) {
+     final syncState = ref.watch(syncEngineProvider);
++    final db = ref.watch(appDatabaseProvider);
+
+     if (syncState == SyncState.idle) {
+       return const SizedBox.shrink();
+@@ -35,10 +36,19 @@
+             else
+               Icon(icon, color: Colors.white, size: 16),
+             const SizedBox(width: 8),
+-            Text(
+-              message,
+-              style: const TextStyle(color: Colors.white, fontSize: 12),
+-            ),
++            StreamBuilder(
++              stream: db.select(db.syncQueues).watch(),
++              builder: (context, snapshot) {
++                final pendingCount = snapshot.data?.where((i) => i.retryCount < 9999).length ?? 0;
++                final failedCount = snapshot.data?.where((i) => i.retryCount == 9999).length ?? 0;
++                String suffix = pendingCount > 0 ? ' ($pendingCount pending)' : '';
++                if (failedCount > 0) suffix += ' ($failedCount failed)';
++                return Text(
++                  '$message$suffix',
++                  style: const TextStyle(color: Colors.white, fontSize: 12),
++                );
++              },
++            ),
+           ],
+         ),
+       ),

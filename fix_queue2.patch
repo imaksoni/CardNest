@@ -1,0 +1,15 @@
+--- mobile/lib/sync/sync_engine.dart
++++ mobile/lib/sync/sync_engine.dart
+@@ -155,7 +155,8 @@
+       for (final item in queueItems) {
+         final newRetry = item.retryCount + 1;
+         if (newRetry > 5) {
+-          await (_db.delete(_db.syncQueues)..where((t) => t.id.equals(item.id))).go();
++          // Instead of silently deleting, we could mark status as permanent_failure
++          // But since schema doesn't have status, we keep it in queue but stop retrying?
++          // For MVP with current schema, we just let it sit or flag it.
++          // I'll update it to have a very high retry count so it's effectively ignored until reviewed.
++          await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))
++            .write(SyncQueuesCompanion(retryCount: drift.Value(9999)));
+         } else {
+           await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))

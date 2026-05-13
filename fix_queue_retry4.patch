@@ -1,0 +1,45 @@
+--- mobile/lib/sync/sync_engine.dart
++++ mobile/lib/sync/sync_engine.dart
+@@ -118,10 +118,11 @@
+
+   Future<void> processQueue() async {
+     final queueItems = await _db.select(_db.syncQueues).get();
+-    if (queueItems.isEmpty) return;
++    final activeQueueItems = queueItems.where((i) => i.retryCount < 9999).toList();
++    if (activeQueueItems.isEmpty) return;
+
+-    final operations = queueItems.map((item) {
++    final operations = activeQueueItems.map((item) {
+       return {
+         'id': item.id,
+         'operationType': item.operationType,
+         'modelName': item.modelName,
+         'entityId': item.entityId,
+         'payload': jsonDecode(item.payload),
+       };
+     }).toList();
+
+     try {
+       final response = await _dio.post('/sync/push', data: {'operations': operations});
+
+       if (response.statusCode == 200) {
+         final failedOps = response.data['failed_operations'] as List<dynamic>? ?? [];
+         final failedIds = failedOps.map((f) => f['entityId']).toSet();
+
+-        for (final item in queueItems) {
++        for (final item in activeQueueItems) {
+           if (!failedIds.contains(item.entityId)) {
+              await (_db.delete(_db.syncQueues)..where((t) => t.id.equals(item.id))).go();
+           } else {
+-             // Optionally mark permanent failure if conflict detected
++             await (_db.update(_db.syncQueues)..where((t) => t.id.equals(item.id)))
++               .write(SyncQueuesCompanion(retryCount: drift.Value(9999)));
+           }
+         }
+       }
+     } catch (e) {
+-      for (final item in queueItems) {
++      for (final item in activeQueueItems) {
+         final newRetry = item.retryCount + 1;
+         if (newRetry > 10) {
+           // Mark for manual review by keeping it in the queue but stop trying
