@@ -11,6 +11,18 @@ class UserRepository {
 
   UserRepository(this._dio, this._localRepo);
 
+  Future<Map<String, dynamic>?> searchUserByPhone(String phone) async {
+    try {
+      final response = await _dio.get('/users/search', queryParameters: {'phone': phone});
+      return response.data;
+    } catch (e) {
+      if (e is DioException && e.response?.statusCode == 404) {
+        return null;
+      }
+      rethrow;
+    }
+  }
+
   Future<void> updateProfile({String? displayName, String? email}) async {
     try {
       final response = await _dio.post('/users/profile', data: {
