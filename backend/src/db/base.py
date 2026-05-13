@@ -7,3 +7,4 @@ from src.programs.models import Program
 from src.tiers.models import Tier
 from src.cards.models import Card
 from src.activities.models import CardActivity, AuditEvent
+from src.qr_validation.models import QRValidationEvent

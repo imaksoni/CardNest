@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'loyalty_card_widget.dart';
 import '../core/widgets.dart';
 import 'offline_banner.dart';
+import 'qr_generator_dialog.dart';
 
 class CardDetailScreen extends ConsumerWidget {
   final Map<String, dynamic> cardData;
@@ -103,7 +104,12 @@ class CardDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   OutlinedButton(
                     onPressed: () {
-                      // Show QR for scanning at register
+                      showDialog(
+                        context: context,
+                        builder: (context) => QrGeneratorDialog(
+                          cardId: int.parse(cardData['id'].toString()),
+                        ),
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
